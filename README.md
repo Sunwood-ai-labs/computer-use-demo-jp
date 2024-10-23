@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/anthropics/computer-use-demo/main/docs/computer-use-demo.png" width="100%">
+  <img src="https://raw.githubusercontent.com/Sunwood-ai-labs/computer-use-demo-jp/refs/heads/main/docs/computer-use-demo.png" width="100%">
   <h1 align="center">🌟 Anthropic Computer Use Demo 🌟</h1>
 </p>
 
