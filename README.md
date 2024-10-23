@@ -39,150 +39,54 @@
 
 ## 🚀 プロジェクト概要
 
-このリポジトリは、Claude 3.5 Sonnetのコンピューター使用機能を試すためのデモ環境を提供します。以下の要素が含まれています：
+このリポジトリは、Claude 3.5 Sonnetのコンピューター使用機能を試すためのデモ環境を提供します。StreamlitアプリケーションとDockerコンテナを使用して、Anthropic API、AWS Bedrock、またはGoogle Cloud Vertex AIを通じて、コンピューター操作を可能にするエージェントループを提供します。README.mdに記載されている重要なセキュリティ上の注意事項に従って使用してください。
 
-- 必要な依存関係を含むDockerコンテナ
-- Anthropic API、Bedrock、またはVertexを使用したエージェントループ
-- Anthropic定義のコンピューター使用ツール
-- インタラクティブなStreamlitアプリケーション
+## ✨ 主な機能
 
-## 🆕 クイックスタート
+- Anthropic API、AWS Bedrock、Google Cloud Vertex AIへの対応
+- Dockerコンテナによる環境構築
+- Streamlitアプリケーションによるインタラクティブな操作
+- コンピューター操作のためのエージェントループ
+- ファイル編集ツール
+- コンピューター操作ツール (マウス、キーボード、スクリーンショット操作、座標スケーリング機能)
+- Streamlitアプリケーション (チャットインターフェースとデスクトップビュー、APIキー、プロバイダー、モデル、システムプロンプト設定、エージェントループ実行、HTTPリクエストログ表示、設定リセット、画像表示/非表示切り替え)
+- Bashツール (bashコマンド実行、セッション管理、タイムアウト設定)
+- 複数のツールを管理できるツールコレクションクラス
+- ツールの作成と結果の処理を標準化するツール基底クラスと結果クラス
+- シェルコマンド実行ユーティリティ
+- 静的コンテンツを提供するHTTPサーバー (IPv6対応)
+- Xvfb、x11vnc、noVNC、Mutter、Tint2を起動するスクリプト (エラー処理とログ出力を実装)
 
-### Anthropic API使用
 
-```bash
-export ANTHROPIC_API_KEY=%your_api_key%
-docker run \
-    -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
-```
+## 🔧 使用方法
 
-```powershell
-docker run `
-    -e ANTHROPIC_API_KEY=$env:ANTHROPIC_API_KEY `
-    -v "${HOME}/.anthropic:/home/computeruse/.anthropic" `
-    -p 5900:5900 `
-    -p 8501:8501 `
-    -p 6080:6080 `
-    -p 8080:8080 `
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
-```
+1.  **APIプロバイダーを選択:**  `API Provider`ラジオボタンから、使用するAPIプロバイダー(Anthropic, Bedrock, Vertex AI)を選択します。
+2.  **APIキー/認証情報の入力:** サイドバーに表示される指示に従い、選択したAPIプロバイダーのAPIキーまたは認証情報を入力します。
+3.  **モデルの選択 (オプション):** 使用するモデルを指定できます。デフォルトモデルが設定されています。
+4.  **Dockerコンテナの実行:** クイックスタートセクションの指示に従い、Dockerコンテナを実行します。(Dockerイメージのビルド手順は、Dockerfileを参照)
+5.  **アプリケーションへのアクセス:** コンテナ起動後、`http://localhost:8080`にアクセスしてアプリケーションを使用します。
 
-### AWS Bedrock使用
 
-AWSの認証方法として以下のオプションがあります：
+## 📦 インストール手順
 
-#### オプション1: AWSクレデンシャルファイルとプロファイルを使用（推奨）
+1.  **Dockerのインストール:** Dockerをインストールします。
+2.  **リポジトリのクローン:** このリポジトリをクローンします。
+3.  **Dockerイメージのビルド:** `docker build . -t computer-use-demo`でDockerイメージをビルドします。  または、事前にビルドされたイメージを使用します。(Dockerfile参照)
+4.  **コンテナの実行:** クイックスタートセクションの指示に従って、Dockerコンテナを実行します。
 
-```bash
-export AWS_PROFILE=<your_aws_profile>
-docker run \
-    -e API_PROVIDER=bedrock \
-    -e AWS_PROFILE=$AWS_PROFILE \
-    -e AWS_REGION=us-west-2 \
-    -v $HOME/.aws/credentials:/home/computeruse/.aws/credentials \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
-```
 
-#### オプション2: アクセスキーとシークレットを使用
+## 🆕 最新情報 (Release v0.1.0)
 
-```bash
-export AWS_ACCESS_KEY_ID=%your_aws_access_key%
-export AWS_SECRET_ACCESS_KEY=%your_aws_secret_access_key%
-export AWS_SESSION_TOKEN=%your_aws_session_token%
-docker run \
-    -e API_PROVIDER=bedrock \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
-    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
-    -e AWS_REGION=us-west-2 \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
-```
+![Release Header](https://raw.githubusercontent.com/Sunwood-ai-labs/computer-use-demo-jp/main/docs/release_notes/header_image/release_header_v0.1.0.png)
 
-### Google Cloud Vertex AI使用
+- READMEファイルの全面的な改修
+- ヘッダー画像の追加と更新
+- 英語READMEの更新
+- ファイル編集ツールとコンピューター操作ツールの追加
+- いくつかのバグ修正
+- リポジトリ名変更に伴う関連ファイルの更新
 
-```bash
-docker build . -t computer-use-demo
-gcloud auth application-default login
-export VERTEX_REGION=%your_vertex_region%
-export VERTEX_PROJECT_ID=%your_vertex_project_id%
-docker run \
-    -e API_PROVIDER=vertex \
-    -e CLOUD_ML_REGION=$VERTEX_REGION \
-    -e ANTHROPIC_VERTEX_PROJECT_ID=$VERTEX_PROJECT_ID \
-    -v $HOME/.config/gcloud/application_default_credentials.json:/home/computeruse/.config/gcloud/application_default_credentials.json \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it computer-use-demo
-```
-
-## 📺 デモアプリへのアクセス
-
-コンテナ起動後、以下のURLでアクセスできます：
-
-- 統合インターフェース: [http://localhost:8080](http://localhost:8080)
-- Streamlitインターフェースのみ: [http://localhost:8501](http://localhost:8501)
-- デスクトップビューのみ: [http://localhost:6080/vnc.html](http://localhost:6080/vnc.html)
-- VNC直接接続: `vnc://localhost:5900`
-
-## 🖥️ スクリーンサイズの設定
-
-環境変数 `WIDTH` と `HEIGHT` でスクリーンサイズを設定できます：
-
-```bash
-docker run \
-    -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -e WIDTH=1920 \
-    -e HEIGHT=1080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
-```
-
-> [!IMPORTANT]
-> パフォーマンスと精度の観点から、[XGA/WXGA](https://en.wikipedia.org/wiki/Display_resolution_standards#XGA)以上の解像度でのスクリーンショット送信は推奨されません。
-
-## 🛠️ 開発環境のセットアップ
-
-```bash
-./setup.sh  # 仮想環境の設定、開発依存関係のインストール、pre-commitフックの設定
-docker build . -t computer-use-demo:local  # Dockerイメージの手動ビルド（任意）
-export ANTHROPIC_API_KEY=%your_api_key%
-docker run \
-    -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-    -v $(pwd)/computer_use_demo:/home/computeruse/computer_use_demo/ \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it computer-use-demo:local
-```
-
-## 🤝 フィードバック
-
-ベータ版の品質向上のため、[こちらのフォーム](https://forms.gle/BT1hpBrqDPDUrCqo7)からフィードバックをお寄せください。モデルの応答品質、API、ドキュメントについてのご意見をお待ちしています！
 
 ## 📄 ライセンス
 
-本プロジェクトはMITライセンスで提供されています。詳細は[LICENSE](LICENSE)をご覧ください。
+本プロジェクトはMITライセンスで提供されています。詳細は[LICENSE](LICENSE copy)をご覧ください。
