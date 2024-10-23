@@ -47,6 +47,15 @@
 - Dockerコンテナによる環境構築
 - Streamlitアプリケーションによるインタラクティブな操作
 - コンピューター操作のためのエージェントループ
+- ファイル編集ツール
+- コンピューター操作ツール (マウス、キーボード、スクリーンショット操作、座標スケーリング機能)
+- Streamlitアプリケーション (チャットインターフェースとデスクトップビュー、APIキー、プロバイダー、モデル、システムプロンプト設定、エージェントループ実行、HTTPリクエストログ表示、設定リセット、画像表示/非表示切り替え)
+- Bashツール (bashコマンド実行、セッション管理、タイムアウト設定)
+- 複数のツールを管理できるツールコレクションクラス
+- ツールの作成と結果の処理を標準化するツール基底クラスと結果クラス
+- シェルコマンド実行ユーティリティ
+- 静的コンテンツを提供するHTTPサーバー (IPv6対応)
+- Xvfb、x11vnc、noVNC、Mutter、Tint2を起動するスクリプト (エラー処理とログ出力を実装)
 
 
 ## 🔧 使用方法
@@ -54,22 +63,28 @@
 1.  **APIプロバイダーを選択:**  `API Provider`ラジオボタンから、使用するAPIプロバイダー(Anthropic, Bedrock, Vertex AI)を選択します。
 2.  **APIキー/認証情報の入力:** サイドバーに表示される指示に従い、選択したAPIプロバイダーのAPIキーまたは認証情報を入力します。
 3.  **モデルの選択 (オプション):** 使用するモデルを指定できます。デフォルトモデルが設定されています。
-4.  **Dockerコンテナの実行:** クイックスタートセクションの指示に従い、Dockerコンテナを実行します。
+4.  **Dockerコンテナの実行:** クイックスタートセクションの指示に従い、Dockerコンテナを実行します。(Dockerイメージのビルド手順は、Dockerfileを参照)
 5.  **アプリケーションへのアクセス:** コンテナ起動後、`http://localhost:8080`にアクセスしてアプリケーションを使用します。
+
 
 ## 📦 インストール手順
 
 1.  **Dockerのインストール:** Dockerをインストールします。
 2.  **リポジトリのクローン:** このリポジトリをクローンします。
-3.  **Dockerイメージのビルド (オプション):**  `docker build . -t computer-use-demo`でDockerイメージをビルドします。クイックスタートセクションでは、事前にビルド済みのイメージを使用する方法も示しています。
+3.  **Dockerイメージのビルド:** `docker build . -t computer-use-demo`でDockerイメージをビルドします。  または、事前にビルドされたイメージを使用します。(Dockerfile参照)
 4.  **コンテナの実行:** クイックスタートセクションの指示に従って、Dockerコンテナを実行します。
 
 
-## 🆕 最新情報 (Release v0.0.0)
+## 🆕 最新情報 (Release v0.1.0)
 
-![Release Header](https://raw.githubusercontent.com/Sunwood-ai-labs/computer-use-demo-jp/main/docs/release_notes/header_image/release_header_v0.0.0.png)
+![Release Header](https://raw.githubusercontent.com/Sunwood-ai-labs/computer-use-demo-jp/main/docs/release_notes/header_image/release_header_v0.1.0.png)
 
-- このリリースはv0.0.0の初期リリースであり、ベータ版です。README.mdに記載されているセキュリティに関する注意事項を必ずお読みください。
+- READMEファイルの全面的な改修
+- ヘッダー画像の追加と更新
+- 英語READMEの更新
+- ファイル編集ツールとコンピューター操作ツールの追加
+- いくつかのバグ修正
+- リポジトリ名変更に伴う関連ファイルの更新
 
 
 ## 📄 ライセンス
