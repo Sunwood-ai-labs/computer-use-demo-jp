@@ -1,26 +1,25 @@
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/Sunwood-ai-labs/computer-use-demo-jp/refs/heads/main/docs/computer-use-demo.png" width="100%">
-  <h1 align="center">🌟 Anthropic Computer Use Demo 🌟</h1>
+  <h1 align="center">🌟 Anthropic Computer Use Demo (Japanese) 🌟</h1>
 </p>
 
 <p align="center">
-  <a href="https://github.com/anthropics/computer-use-demo">
-    <img alt="GitHub Repo" src="https://img.shields.io/badge/github-computer--use--demo-blue?logo=github">
+  <a href="https://github.com/Sunwood-ai-labs/computer-use-demo-jp">
+    <img alt="GitHub Repo" src="https://img.shields.io/badge/github-computer--use--demo-jp-blue?logo=github">
   </a>
-  <a href="https://github.com/anthropics/computer-use-demo/blob/main/LICENSE">
-    <img alt="License" src="https://img.shields.io/github/license/anthropics/computer-use-demo?color=green">
+  <a href="https://github.com/Sunwood-ai-labs/computer-use-demo-jp/blob/main/LICENSE%20copy">
+    <img alt="License" src="https://img.shields.io/github/license/Sunwood-ai-labs/computer-use-demo-jp?color=green">
   </a>
-  <a href="https://github.com/anthropics/computer-use-demo/stargazers">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/anthropics/computer-use-demo?style=social">
+  <a href="https://github.com/Sunwood-ai-labs/computer-use-demo-jp/stargazers">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/Sunwood-ai-labs/computer-use-demo-jp?style=social">
   </a>
 </p>
 
 <h2 align="center">
   ～ Claude 3.5 Sonnetのコンピューター使用機能デモ ～
 
-<a href="https://github.com/anthropics/computer-use-demo/blob/main/README.md"><img src="https://img.shields.io/badge/ドキュメント-日本語-white.svg" alt="JA doc"/></a>
-<a href="https://github.com/anthropics/computer-use-demo/blob/main/docs/README.en.md"><img src="https://img.shields.io/badge/english-document-white.svg" alt="EN doc"></a>
+<a href="https://github.com/Sunwood-ai-labs/computer-use-demo-jp/blob/main/README.md"><img src="https://img.shields.io/badge/ドキュメント-日本語-white.svg" alt="JA doc"/></a>
+<a href="https://github.com/Sunwood-ai-labs/computer-use-demo-jp/blob/main/docs/README.en.md"><img src="https://img.shields.io/badge/english-document-white.svg" alt="EN doc"></a>
 </h2>
 
 <p align="center">
@@ -59,98 +58,18 @@
 
 ## 🚀 クイックスタート：Dockerコンテナの実行
 
-### 🔑 Anthropic API
+### 🔑 Anthropic APIキーを用いた実行
 
 > [!TIP]
 > APIキーは[Anthropic Console](https://console.anthropic.com/)で確認できます。
 
 ```bash
 export ANTHROPIC_API_KEY=%your_api_key%
-docker run \
-    -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
+docker compose up -d
 ```
 
 コンテナが起動したら、インターフェースへの接続方法については下記の[デモアプリへのアクセス](#デモアプリへのアクセス)セクションを参照してください。
 
-### ☁️ Bedrock
-
-BedrockでClaudeを使用するには、適切な権限を持つAWS認証情報を渡す必要があります。
-
-Bedrockでの認証には複数のオプションがあります。詳細とオプションについては[boto3のドキュメント](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables)を参照してください。
-
-#### ➡️ オプション1：（推奨）ホストのAWS認証情報ファイルとAWSプロファイルを使用
-
-```bash
-export AWS_PROFILE=<your_aws_profile>
-docker run \
-    -e API_PROVIDER=bedrock \
-    -e AWS_PROFILE=$AWS_PROFILE \
-    -e AWS_REGION=us-west-2 \
-    -v $HOME/.aws/credentials:/home/computeruse/.aws/credentials \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
-```
-
-コンテナが起動したら、インターフェースへの接続方法については下記の[デモアプリへのアクセス](#デモアプリへのアクセス)セクションを参照してください。
-
-#### ➡️ オプション2：アクセスキーとシークレットを使用
-
-```bash
-export AWS_ACCESS_KEY_ID=%your_aws_access_key%
-export AWS_SECRET_ACCESS_KEY=%your_aws_secret_access_key%
-export AWS_SESSION_TOKEN=%your_aws_session_token%
-docker run \
-    -e API_PROVIDER=bedrock \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
-    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
-    -e AWS_REGION=us-west-2 \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
-```
-
-コンテナが起動したら、インターフェースへの接続方法については下記の[デモアプリへのアクセス](#デモアプリへのアクセス)セクションを参照してください。
-
-### 🟢 Vertex
-
-VertexでClaudeを使用するには、適切な権限を持つGoogle Cloud認証情報を渡す必要があります。
-
-```bash
-docker build . -t computer-use-demo
-gcloud auth application-default login
-export VERTEX_REGION=%your_vertex_region%
-export VERTEX_PROJECT_ID=%your_vertex_project_id%
-docker run \
-    -e API_PROVIDER=vertex \
-    -e CLOUD_ML_REGION=$VERTEX_REGION \
-    -e ANTHROPIC_VERTEX_PROJECT_ID=$VERTEX_PROJECT_ID \
-    -v $HOME/.config/gcloud/application_default_credentials.json:/home/computeruse/.config/gcloud/application_default_credentials.json \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it computer-use-demo
-```
-
-コンテナが起動したら、インターフェースへの接続方法については下記の[デモアプリへのアクセス](#デモアプリへのアクセス)セクションを参照してください。
-
-この例では、VertexでのGoogle Cloud Application Default Credentialsを使用した認証方法を示しています。
-
-任意の認証情報ファイルを使用するために`GOOGLE_APPLICATION_CREDENTIALS`を設定することもできます。詳細については[Google Cloud認証ドキュメント](https://cloud.google.com/docs/authentication/application-default-credentials#GAC)を参照してください。
 
 ### 🖥️ デモアプリへのアクセス
 
@@ -169,36 +88,21 @@ docker run \
 環境変数`WIDTH`と`HEIGHT`を使用して画面サイズを設定できます。例：
 
 ```bash
-docker run \
-    -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -e WIDTH=1920 \
-    -e HEIGHT=1080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest
+export WIDTH=1920
+export HEIGHT=1080
+docker compose up -d
 ```
 
 [画像のリサイズ](https://docs.anthropic.com/en/docs/build-with-claude/vision#evaluate-image-size)に関する問題を避けるため、[XGA/WXGA](https://en.wikipedia.org/wiki/Display_resolution_standards#XGA)以上の解像度でのスクリーンショット送信はお勧めしません。
 APIの画像リサイズ動作に依存すると、ツールで直接スケーリングを実装する場合と比べて、モデルの精度が低下しパフォーマンスが遅くなります。このプロジェクトの`computer`ツール実装では、より高い解像度から推奨解像度への画像とコーディネートのスケーリング方法を示しています。
 
-## 🛠️ 開発
+## 🛠️ 開発環境
 
 ```bash
 ./setup.sh  # venvの設定、開発依存関係のインストール、pre-commitフックのインストール
 docker build . -t computer-use-demo:local  # Dockerイメージを手動でビルド（オプション）
 export ANTHROPIC_API_KEY=%your_api_key%
-docker run \
-    -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-    -v $(pwd)/computer_use_demo:/home/computeruse/computer_use_demo/ # 開発用にローカルのPythonモジュールをマウント \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8080:8080 \
-    -it computer-use-demo:local  # ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latestも使用可能
+docker compose up -d
 ```
 
 ```powershell
@@ -209,15 +113,7 @@ docker build . -t computer-use-demo:local
 $env:ANTHROPIC_API_KEY = "your_api_key"
 
 # Dockerコンテナの実行
-docker run `
-    -e ANTHROPIC_API_KEY=$env:ANTHROPIC_API_KEY `
-    -v ${PWD}/computer_use_demo:/home/computeruse/computer_use_demo/ `
-    -v ${HOME}/.anthropic:/home/computeruse/.anthropic `
-    -p 5900:5900 `
-    -p 8501:8501 `
-    -p 6080:6080 `
-    -p 8080:8080 `
-    -it computer-use-demo:local
+docker compose up -d
 ```
 
 上記のdocker runコマンドは、ホストから編集できるようにリポジトリをDockerイメージ内にマウントします。Streamlitは自動リロードが既に設定されています。
@@ -287,3 +183,12 @@ graph LR
     Root --> README.md
     Root --> requirements.txt
 ```
+
+## 📄 ライセンス
+
+📄 MIT License
+
+## 👏 謝辞
+
+iris-s-coon、Maki
+
