@@ -201,6 +201,25 @@ docker run \
     -it computer-use-demo:local  # ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latestも使用可能
 ```
 
+```powershell
+# Dockerイメージを手動でビルド（オプション）
+docker build . -t computer-use-demo:local
+
+# 環境変数の設定
+$env:ANTHROPIC_API_KEY = "your_api_key"
+
+# Dockerコンテナの実行
+docker run `
+    -e ANTHROPIC_API_KEY=$env:ANTHROPIC_API_KEY `
+    -v ${PWD}/computer_use_demo:/home/computeruse/computer_use_demo/ `
+    -v ${HOME}/.anthropic:/home/computeruse/.anthropic `
+    -p 5900:5900 `
+    -p 8501:8501 `
+    -p 6080:6080 `
+    -p 8080:8080 `
+    -it computer-use-demo:local
+```
+
 上記のdocker runコマンドは、ホストから編集できるようにリポジトリをDockerイメージ内にマウントします。Streamlitは自動リロードが既に設定されています。
 
 ## 📂 リポジトリの詳細構造
