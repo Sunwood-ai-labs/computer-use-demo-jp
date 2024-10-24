@@ -202,3 +202,69 @@ docker run \
 ```
 
 上記のdocker runコマンドは、ホストから編集できるようにリポジトリをDockerイメージ内にマウントします。Streamlitは自動リロードが既に設定されています。
+
+## リポジトリの詳細構造
+
+以下に、主要なディレクトリとファイルの役割を詳しく説明します。
+
+### 主要ディレクトリ
+
+* **`computer_use_demo/`**: AIエージェントの頭脳を構成するPythonコードの中核部分。
+    * **`tools/`**: AIエージェントが使用するツール群を実装。`bash.py` (bashコマンド実行), `computer.py` (画面/キーボード/マウス操作), `edit.py` (ファイル編集)など、各ツールは特定の機能を提供します。`base.py`はツールの基底クラスを定義し、`collection.py`はツール群を一括管理します。`run.py`はシェルコマンドの非同期実行ユーティリティを提供します。
+    * `loop.py`: AIエージェントとの対話ループを実装。API呼び出し、ツールの実行、結果の処理などを繰り返すことで、AIエージェントが自律的に動作します。
+    * `requirements.txt`: デモ実行に必要なPythonパッケージをリストアップします。
+    * `streamlit.py`: Streamlitアプリのエントリポイント。ユーザーインターフェースを提供し、チャット画面、API通信ログ表示、設定パネルなどを表示します。
+* **`image/`**: Dockerイメージ構築に必要なファイル群。仮想環境の設計図と言えるでしょう。
+    * `static_content/`: HTTPサーバーが提供するHTML, JavaScript等の静的コンテンツ。StreamlitアプリとnoVNCを統合したインターフェースを提供します。
+    * `entrypoint.sh`: Dockerコンテナ起動時に実行されるスクリプト。各種サービスの起動とログの設定などを行います。
+    * `http_server.py`: StreamlitとnoVNCへのアクセスを統合するシンプルなHTTPサーバー。
+    * `*.startup.sh`: Xvfb (仮想ディスプレイ), tint2 (パネル), mutter (ウィンドウマネージャ), x11vnc (VNCサーバー), noVNC (HTML5 VNCクライアント) などの起動スクリプト。
+    * `.config/`: tint2の設定ファイル等。
+
+### その他のファイル
+
+* `.env.example`: 環境変数の設定例。APIキーや各種トークンの設定に使用します。
+* `app.py`: シンプルなStreamlitアプリでREADME.mdの内容を表示します。
+* `dev-requirements.txt`: 開発環境に必要なパッケージ一覧。
+* `Dockerfile`: Dockerイメージの構築方法を定義。Ubuntuベースのイメージに必要ツールやライブラリをインストールし、ユーザー、Python環境、デスクトップ環境をセットアップします。
+* `LICENSE copy`: ライセンス情報。
+* `pyproject.toml`: プロジェクト設定ファイル。Pyrightとpytestの設定が含まれています。
+* `README.md`: プロジェクトの説明ドキュメント。
+* `requirements.txt`: 実行に必要なPythonパッケージ一覧。
+* `ruff.toml`: Ruff (Pythonのlinter) の設定ファイル。
+* `setup.ps1`, `setup.sh`: 開発環境のセットアップスクリプト。Windows (PowerShell) とLinux/macOS (bash) に対応しています。
+
+
+### リポジトリ構造の可視化
+
+```mermaid
+%%{init: {'theme':'base'}}%%
+
+graph LR
+    subgraph computer_use_demo_files
+        tools --> base.py
+        tools --> bash.py
+        tools --> computer.py
+        tools --> edit.py
+        tools --> collection.py
+        tools --> run.py
+        demo_root --> loop.py
+        demo_root --> requirements.txt
+        demo_root --> streamlit.py
+    end
+
+    subgraph image_files
+        image --> static_content
+        static_content --> index.html
+        image --> entrypoint.sh
+        image --> http_server.py
+        image --> *.startup.sh
+        image --> .config
+    end
+
+    Root --> computer_use_demo
+    Root --> image
+    Root --> Dockerfile
+    Root --> README.md
+    Root --> requirements.txt
+```
