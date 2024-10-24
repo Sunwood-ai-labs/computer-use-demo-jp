@@ -57,9 +57,9 @@
 > [!IMPORTANT]
 > コンポーネントは緩やかに分離されています：エージェントループはClaudeによって制御されるコンテナ内で実行され、一度に1つのセッションでのみ使用でき、必要に応じてセッション間で再起動またはリセットする必要があります。
 
-## クイックスタート：Dockerコンテナの実行
+## 🚀 クイックスタート：Dockerコンテナの実行
 
-### Anthropic API
+### 🔑 Anthropic API
 
 > [!TIP]
 > APIキーは[Anthropic Console](https://console.anthropic.com/)で確認できます。
@@ -78,13 +78,13 @@ docker run \
 
 コンテナが起動したら、インターフェースへの接続方法については下記の[デモアプリへのアクセス](#デモアプリへのアクセス)セクションを参照してください。
 
-### Bedrock
+### ☁️ Bedrock
 
 BedrockでClaudeを使用するには、適切な権限を持つAWS認証情報を渡す必要があります。
 
 Bedrockでの認証には複数のオプションがあります。詳細とオプションについては[boto3のドキュメント](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html#environment-variables)を参照してください。
 
-#### オプション1：（推奨）ホストのAWS認証情報ファイルとAWSプロファイルを使用
+#### ➡️ オプション1：（推奨）ホストのAWS認証情報ファイルとAWSプロファイルを使用
 
 ```bash
 export AWS_PROFILE=<your_aws_profile>
@@ -103,7 +103,7 @@ docker run \
 
 コンテナが起動したら、インターフェースへの接続方法については下記の[デモアプリへのアクセス](#デモアプリへのアクセス)セクションを参照してください。
 
-#### オプション2：アクセスキーとシークレットを使用
+#### ➡️ オプション2：アクセスキーとシークレットを使用
 
 ```bash
 export AWS_ACCESS_KEY_ID=%your_aws_access_key%
@@ -125,7 +125,7 @@ docker run \
 
 コンテナが起動したら、インターフェースへの接続方法については下記の[デモアプリへのアクセス](#デモアプリへのアクセス)セクションを参照してください。
 
-### Vertex
+### 🟢 Vertex
 
 VertexでClaudeを使用するには、適切な権限を持つGoogle Cloud認証情報を渡す必要があります。
 
@@ -152,7 +152,7 @@ docker run \
 
 任意の認証情報ファイルを使用するために`GOOGLE_APPLICATION_CREDENTIALS`を設定することもできます。詳細については[Google Cloud認証ドキュメント](https://cloud.google.com/docs/authentication/application-default-credentials#GAC)を参照してください。
 
-### デモアプリへのアクセス
+### 🖥️ デモアプリへのアクセス
 
 コンテナが起動したら、ブラウザで[http://localhost:8080](http://localhost:8080)を開いて、エージェントチャットとデスクトップビューの両方を含む統合インターフェースにアクセスできます。
 
@@ -164,7 +164,7 @@ docker run \
 - デスクトップビューのみ：[http://localhost:6080/vnc.html](http://localhost:6080/vnc.html)
 - 直接VNC接続：`vnc://localhost:5900`（VNCクライアント用）
 
-## 画面サイズ
+## 📏 画面サイズ
 
 環境変数`WIDTH`と`HEIGHT`を使用して画面サイズを設定できます。例：
 
@@ -184,7 +184,7 @@ docker run \
 [画像のリサイズ](https://docs.anthropic.com/en/docs/build-with-claude/vision#evaluate-image-size)に関する問題を避けるため、[XGA/WXGA](https://en.wikipedia.org/wiki/Display_resolution_standards#XGA)以上の解像度でのスクリーンショット送信はお勧めしません。
 APIの画像リサイズ動作に依存すると、ツールで直接スケーリングを実装する場合と比べて、モデルの精度が低下しパフォーマンスが遅くなります。このプロジェクトの`computer`ツール実装では、より高い解像度から推奨解像度への画像とコーディネートのスケーリング方法を示しています。
 
-## 開発
+## 🛠️ 開発
 
 ```bash
 ./setup.sh  # venvの設定、開発依存関係のインストール、pre-commitフックのインストール
@@ -203,11 +203,11 @@ docker run \
 
 上記のdocker runコマンドは、ホストから編集できるようにリポジトリをDockerイメージ内にマウントします。Streamlitは自動リロードが既に設定されています。
 
-## リポジトリの詳細構造
+## 📂 リポジトリの詳細構造
 
 以下に、主要なディレクトリとファイルの役割を詳しく説明します。
 
-### 主要ディレクトリ
+### 🗄️ 主要ディレクトリ
 
 * **`computer_use_demo/`**: AIエージェントの頭脳を構成するPythonコードの中核部分。
     * **`tools/`**: AIエージェントが使用するツール群を実装。`bash.py` (bashコマンド実行), `computer.py` (画面/キーボード/マウス操作), `edit.py` (ファイル編集)など、各ツールは特定の機能を提供します。`base.py`はツールの基底クラスを定義し、`collection.py`はツール群を一括管理します。`run.py`はシェルコマンドの非同期実行ユーティリティを提供します。
@@ -221,7 +221,7 @@ docker run \
     * `*.startup.sh`: Xvfb (仮想ディスプレイ), tint2 (パネル), mutter (ウィンドウマネージャ), x11vnc (VNCサーバー), noVNC (HTML5 VNCクライアント) などの起動スクリプト。
     * `.config/`: tint2の設定ファイル等。
 
-### その他のファイル
+### 📄 その他のファイル
 
 * `.env.example`: 環境変数の設定例。APIキーや各種トークンの設定に使用します。
 * `app.py`: シンプルなStreamlitアプリでREADME.mdの内容を表示します。
@@ -235,7 +235,7 @@ docker run \
 * `setup.ps1`, `setup.sh`: 開発環境のセットアップスクリプト。Windows (PowerShell) とLinux/macOS (bash) に対応しています。
 
 
-### リポジトリ構造の可視化
+### 📊 リポジトリ構造の可視化
 
 ```mermaid
 %%{init: {'theme':'base'}}%%
