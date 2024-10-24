@@ -1,5 +1,5 @@
 """
-Entrypoint for streamlit, see https://docs.streamlit.io/
+Streamlitのエントリーポイント、詳細は https://docs.streamlit.io/ を参照
 """
 
 import asyncio
@@ -32,19 +32,19 @@ CONFIG_DIR = PosixPath("~/.anthropic").expanduser()
 API_KEY_FILE = CONFIG_DIR / "api_key"
 STREAMLIT_STYLE = """
 <style>
-    /* Hide chat input while agent loop is running */
+    /* エージェントループ実行中はチャット入力を非表示 */
     .stApp[data-teststate=running] .stChatInput textarea,
     .stApp[data-test-script-state=running] .stChatInput textarea {
         display: none;
     }
-     /* Hide the streamlit deploy button */
+     /* Streamlitのデプロイボタンを非表示 */
     .stDeployButton {
         visibility: hidden;
     }
 </style>
 """
 
-WARNING_TEXT = "⚠️ Security Alert: Never provide access to sensitive accounts or data, as malicious web content can hijack Claude's behavior"
+WARNING_TEXT = "⚠️ セキュリティ警告: 悪意のあるウェブコンテンツがClaudeの動作を乗っ取る可能性があるため、機密アカウントやデータへのアクセスは絶対に提供しないでください"
 
 
 class Sender(StrEnum):
@@ -57,7 +57,7 @@ def setup_state():
     if "messages" not in st.session_state:
         st.session_state.messages = []
     if "api_key" not in st.session_state:
-        # Try to load API key from file first, then environment
+        # まずファイルからAPIキーを読み込み、次に環境変数から読み込む
         st.session_state.api_key = load_from_storage("api_key") or os.getenv(
             "ANTHROPIC_API_KEY", ""
         )
@@ -90,12 +90,12 @@ def _reset_model():
 
 
 async def main():
-    """Render loop for streamlit"""
+    """Streamlitのレンダリングループ"""
     setup_state()
 
     st.markdown(STREAMLIT_STYLE, unsafe_allow_html=True)
 
-    st.title("Claude Computer Use Demo")
+    st.title("Claude コンピュータ操作デモ")
 
     if not os.getenv("HIDE_WARNING", False):
         st.warning(WARNING_TEXT)
@@ -110,41 +110,41 @@ async def main():
 
         provider_options = [option.value for option in APIProvider]
         st.radio(
-            "API Provider",
+            "APIプロバイダー",
             options=provider_options,
             key="provider_radio",
             format_func=lambda x: x.title(),
             on_change=_reset_api_provider,
         )
 
-        st.text_input("Model", key="model")
+        st.text_input("モデル", key="model")
 
         if st.session_state.provider == APIProvider.ANTHROPIC:
             st.text_input(
-                "Anthropic API Key",
+                "Anthropic APIキー",
                 type="password",
                 key="api_key",
                 on_change=lambda: save_to_storage("api_key", st.session_state.api_key),
             )
 
         st.number_input(
-            "Only send N most recent images",
+            "直近N枚の画像のみ送信",
             min_value=0,
             key="only_n_most_recent_images",
-            help="To decrease the total tokens sent, remove older screenshots from the conversation",
+            help="総トークン数を減らすため、古いスクリーンショットを会話から削除します",
         )
         st.text_area(
-            "Custom System Prompt Suffix",
+            "カスタムシステムプロンプトの接尾辞",
             key="custom_system_prompt",
-            help="Additional instructions to append to the system prompt. see computer_use_demo/loop.py for the base system prompt.",
+            help="システムプロンプトに追加する指示。基本のシステムプロンプトについては computer_use_demo/loop.py を参照してください。",
             on_change=lambda: save_to_storage(
                 "system_prompt", st.session_state.custom_system_prompt
             ),
         )
-        st.checkbox("Hide screenshots", key="hide_images")
+        st.checkbox("スクリーンショットを非表示", key="hide_images")
 
-        if st.button("Reset", type="primary"):
-            with st.spinner("Resetting..."):
+        if st.button("リセット", type="primary"):
+            with st.spinner("リセット中..."):
                 st.session_state.clear()
                 setup_state()
 
@@ -156,25 +156,25 @@ async def main():
         if auth_error := validate_auth(
             st.session_state.provider, st.session_state.api_key
         ):
-            st.warning(f"Please resolve the following auth issue:\n\n{auth_error}")
+            st.warning(f"以下の認証の問題を解決してください:\n\n{auth_error}")
             return
         else:
             st.session_state.auth_validated = True
 
-    chat, http_logs = st.tabs(["Chat", "HTTP Exchange Logs"])
+    chat, http_logs = st.tabs(["チャット", "HTTP通信ログ"])
     new_message = st.chat_input(
-        "Type a message to send to Claude to control the computer..."
+        "コンピュータを操作するためのメッセージをClaudeに送信..."
     )
 
     with chat:
-        # render past chats
+        # 過去のチャットを表示
         for message in st.session_state.messages:
             if isinstance(message["content"], str):
                 _render_message(message["role"], message["content"])
             elif isinstance(message["content"], list):
                 for block in message["content"]:
-                    # the tool result we send back to the Anthropic API isn't sufficient to render all details,
-                    # so we store the tool use responses
+                    # Anthropic APIに送り返すツール実行結果だけでは全ての詳細を表示するのに不十分なため、
+                    # ツール使用の応答を保存しています
                     if isinstance(block, dict) and block["type"] == "tool_result":
                         _render_message(
                             Sender.TOOL, st.session_state.tools[block["tool_use_id"]]
@@ -185,11 +185,11 @@ async def main():
                             cast(BetaTextBlock | BetaToolUseBlock, block),
                         )
 
-        # render past http exchanges
+        # 過去のHTTP通信を表示
         for identity, response in st.session_state.responses.items():
             _render_api_response(response, identity, http_logs)
 
-        # render past chats
+        # 新しいチャットを表示
         if new_message:
             st.session_state.messages.append(
                 {
@@ -205,11 +205,11 @@ async def main():
             return
 
         if most_recent_message["role"] is not Sender.USER:
-            # we don't have a user message to respond to, exit early
+            # 応答すべきユーザーメッセージがない場合は終了
             return
 
-        with st.spinner("Running Agent..."):
-            # run the agent sampling loop with the newest message
+        with st.spinner("エージェントを実行中..."):
+            # 最新のメッセージでエージェントのサンプリングループを実行
             st.session_state.messages = await sampling_loop(
                 system_prompt_suffix=st.session_state.custom_system_prompt,
                 model=st.session_state.model,
@@ -232,28 +232,28 @@ async def main():
 def validate_auth(provider: APIProvider, api_key: str | None):
     if provider == APIProvider.ANTHROPIC:
         if not api_key:
-            return "Enter your Anthropic API key in the sidebar to continue."
+            return "続行するには、サイドバーでAnthropic APIキーを入力してください。"
     if provider == APIProvider.BEDROCK:
         import boto3
 
         if not boto3.Session().get_credentials():
-            return "You must have AWS credentials set up to use the Bedrock API."
+            return "Bedrock APIを使用するにはAWSクレデンシャルを設定する必要があります。"
     if provider == APIProvider.VERTEX:
         import google.auth
         from google.auth.exceptions import DefaultCredentialsError
 
         if not os.environ.get("CLOUD_ML_REGION"):
-            return "Set the CLOUD_ML_REGION environment variable to use the Vertex API."
+            return "Vertex APIを使用するにはCLOUD_ML_REGION環境変数を設定してください。"
         try:
             google.auth.default(
                 scopes=["https://www.googleapis.com/auth/cloud-platform"],
             )
         except DefaultCredentialsError:
-            return "Your google cloud credentials are not set up correctly."
+            return "Google Cloudクレデンシャルが正しく設定されていません。"
 
 
 def load_from_storage(filename: str) -> str | None:
-    """Load data from a file in the storage directory."""
+    """ストレージディレクトリからデータを読み込む"""
     try:
         file_path = CONFIG_DIR / filename
         if file_path.exists():
@@ -261,20 +261,20 @@ def load_from_storage(filename: str) -> str | None:
             if data:
                 return data
     except Exception as e:
-        st.write(f"Debug: Error loading {filename}: {e}")
+        st.write(f"デバッグ: {filename}の読み込み中にエラーが発生: {e}")
     return None
 
 
 def save_to_storage(filename: str, data: str) -> None:
-    """Save data to a file in the storage directory."""
+    """ストレージディレクトリにデータを保存する"""
     try:
         CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         file_path = CONFIG_DIR / filename
         file_path.write_text(data)
-        # Ensure only user can read/write the file
+        # ユーザーのみが読み書き可能なようにファイルのパーミッションを設定
         file_path.chmod(0o600)
     except Exception as e:
-        st.write(f"Debug: Error saving {filename}: {e}")
+        st.write(f"デバッグ: {filename}の保存中にエラーが発生: {e}")
 
 
 def _api_response_callback(
@@ -283,7 +283,7 @@ def _api_response_callback(
     response_state: dict[str, APIResponse[BetaMessage]],
 ):
     """
-    Handle an API response by storing it to state and rendering it.
+    APIレスポンスを状態に保存し、表示する
     """
     response_id = datetime.now().isoformat()
     response_state[response_id] = response
@@ -293,7 +293,7 @@ def _api_response_callback(
 def _tool_output_callback(
     tool_output: ToolResult, tool_id: str, tool_state: dict[str, ToolResult]
 ):
-    """Handle a tool output by storing it to state and rendering it."""
+    """ツール出力を状態に保存し、表示する"""
     tool_state[tool_id] = tool_output
     _render_message(Sender.TOOL, tool_output)
 
@@ -301,9 +301,9 @@ def _tool_output_callback(
 def _render_api_response(
     response: APIResponse[BetaMessage], response_id: str, tab: DeltaGenerator
 ):
-    """Render an API response to a streamlit tab"""
+    """APIレスポンスをStreamlitのタブに表示する"""
     with tab:
-        with st.expander(f"Request/Response ({response_id})"):
+        with st.expander(f"リクエスト/レスポンス ({response_id})"):
             newline = "\n\n"
             st.markdown(
                 f"`{response.http_request.method} {response.http_request.url}`{newline}{newline.join(f'`{k}: {v}`' for k, v in response.http_request.headers.items())}"
@@ -319,8 +319,8 @@ def _render_message(
     sender: Sender,
     message: str | BetaTextBlock | BetaToolUseBlock | ToolResult,
 ):
-    """Convert input from the user or output from the agent to a streamlit message."""
-    # streamlit's hotreloading breaks isinstance checks, so we need to check for class names
+    """ユーザーからの入力またはエージェントからの出力をStreamlitメッセージに変換する"""
+    # Streamlitのホットリロードがisinstance検査を壊すため、クラス名をチェックする必要がある
     is_tool_result = not isinstance(message, str) and (
         isinstance(message, ToolResult)
         or message.__class__.__name__ == "ToolResult"
@@ -348,7 +348,7 @@ def _render_message(
         elif isinstance(message, BetaTextBlock) or isinstance(message, TextBlock):
             st.write(message.text)
         elif isinstance(message, BetaToolUseBlock) or isinstance(message, ToolUseBlock):
-            st.code(f"Tool Use: {message.name}\nInput: {message.input}")
+                    st.code(f"ツール使用: {message.name}\n入力: {message.input}")
         else:
             st.markdown(message)
 
